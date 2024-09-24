@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto:wght@500&family=Fira+Code:wght@500&display=swap");
+
 body,
 html {
   height: 100%;
@@ -32,22 +34,17 @@ html {
   background-color: #ffffff;
 }
 
-#copy-btn {
-  font-size: 0.9rem;
-  padding: 0.25rem 0.5rem;
-}
-
 .CodeMirror {
   flex-grow: 1;
   font-size: 14px;
   line-height: 1.5;
-  font-family: "Courier New", Courier, monospace;
+  font-family: "Fira Code", "Courier New", monospace;
 }
 
 .preview-content {
   flex-grow: 1;
   overflow-y: auto;
-  font-family: Arial, sans-serif;
+  font-family: "Roboto", Arial, sans-serif;
   padding: 10px;
 }
 
@@ -56,8 +53,10 @@ html {
 }
 
 .navbar-brand {
-  font-weight: bold;
+  font-weight: 600;
   color: #ffffff !important;
+  font-family: "Montserrat", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.5rem;
 }
 
 .toolbar {
@@ -66,6 +65,11 @@ html {
 
 .toolbar button {
   margin-right: 5px;
+}
+
+#copy-btn {
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
 }
 
 /* Dark theme styles */

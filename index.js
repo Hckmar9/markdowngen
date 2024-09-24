@@ -101,19 +101,15 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("copy-btn").addEventListener("click", function () {
     const previewText = preview.innerText;
 
-    // Create a temporary textarea element to hold the text
     const tempTextArea = document.createElement("textarea");
     tempTextArea.value = previewText;
     document.body.appendChild(tempTextArea);
 
-    // Select and copy the text
     tempTextArea.select();
     document.execCommand("copy");
 
-    // Remove the temporary textarea
     document.body.removeChild(tempTextArea);
 
-    // Provide visual feedback
     this.textContent = "Copied!";
     setTimeout(() => {
       this.textContent = "Copy";
