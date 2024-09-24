@@ -23,10 +23,18 @@
       <div class="container-fluid">
         <span class="navbar-brand mb-0 h1">Markdown Editor</span>
         <div class="d-flex">
-          <button id="fullscreen-btn" class="btn btn-outline-light me-2">
+          <button
+            id="fullscreen-btn"
+            class="btn btn-outline-light me-2"
+            aria-label="Toggle fullscreen"
+          >
             Full Screen
           </button>
-          <button id="theme-switch" class="btn btn-outline-light">
+          <button
+            id="theme-switch"
+            class="btn btn-outline-light"
+            aria-label="Toggle theme"
+          >
             Toggle Theme
           </button>
         </div>
@@ -38,32 +46,63 @@
         <div class="col-md-6 editor">
           <h5 class="mb-3">Editor</h5>
           <div class="toolbar mb-2">
-            <button class="btn btn-outline-secondary" data-action="bold">
+            <button
+              class="btn btn-outline-secondary"
+              data-action="bold"
+              aria-label="Bold"
+            >
               Bold
             </button>
-            <button class="btn btn-outline-secondary" data-action="italic">
+            <button
+              class="btn btn-outline-secondary"
+              data-action="italic"
+              aria-label="Italic"
+            >
               Italic
             </button>
-            <button class="btn btn-outline-secondary" data-action="link">
+            <button
+              class="btn btn-outline-secondary"
+              data-action="link"
+              aria-label="Link"
+            >
               Link
             </button>
-            <button class="btn btn-outline-secondary" data-action="image">
+            <button
+              class="btn btn-outline-secondary"
+              data-action="image"
+              aria-label="Image"
+            >
               Image
             </button>
-            <button class="btn btn-outline-secondary" data-action="code">
+            <button
+              class="btn btn-outline-secondary"
+              data-action="code"
+              aria-label="Code"
+            >
               Code
             </button>
           </div>
-          <textarea id="markdown-input" class="form-control"></textarea>
+          <label for="markdown-input" class="visually-hidden"
+            >Markdown Input</label
+          >
+          <textarea
+            id="markdown-input"
+            class="form-control"
+            placeholder="Type your Markdown here..."
+          ></textarea>
         </div>
         <div class="col-md-6 preview">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="mb-0">Preview</h5>
-            <button id="copy-btn" class="btn btn-outline-secondary">
+            <button
+              id="copy-btn"
+              class="btn btn-outline-secondary"
+              aria-label="Copy content"
+            >
               Copy
             </button>
           </div>
-          <div id="preview" class="preview-content"></div>
+          <div id="preview" class="preview-content" aria-live="polite"></div>
         </div>
       </div>
     </div>
