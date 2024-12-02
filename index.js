@@ -1,118 +1,108 @@
-let editor;
-
 document.addEventListener("DOMContentLoaded", function () {
+  // Initialize CodeMirror
+  const editor = CodeMirror.fromTextArea(
+    document.getElementById("markdown-input"),
+    {
+      mode: "markdown",
+      theme: "monokai",
+      lineWrapping: true,
+      lineNumbers: true,
+    }
+  );
+
+  // Preview element
   const preview = document.getElementById("preview");
 
-  editor = CodeMirror.fromTextArea(document.getElementById("markdown-input"), {
-    mode: "markdown",
-    lineNumbers: true,
-    theme: "default",
-    lineWrapping: true,
-  });
-
+  // Update preview with marked
   function updatePreview() {
-    const markdownText = editor.getValue();
-    const htmlText = marked.parse(markdownText);
-    preview.innerHTML = htmlText;
+    const markdown = editor.getValue();
+    preview.innerHTML = marked.parse(markdown);
   }
 
+  // Add change listener
   editor.on("change", updatePreview);
 
-  // Initial preview update
-  updatePreview();
+  // Markdown formatting functions
+  const actions = {
+    h1: () => wrapText("# ", ""),
+    h2: () => wrapText("## ", ""),
+    h3: () => wrapText("### ", ""),
+    bold: () => wrapText("**", "**"),
+    italic: () => wrapText("*", "*"),
+    strikethrough: () => wrapText("~~", "~~"),
+    quote: () => wrapText("> ", ""),
+    code: () => wrapText("`", "`"),
+    codeblock: () => wrapText("```\n", "\n```"),
+    link: () => {
+      const url = prompt("Enter URL:");
+      if (url) wrapText("[", `](${url})`);
+    },
+    image: () => {
+      const url = prompt("Enter image URL:");
+      if (url) wrapText("![", `](${url})`);
+    },
+    ul: () => wrapText("- ", ""),
+    ol: () => wrapText("1. ", ""),
+    hr: () => insertText("\n---\n"),
+  };
 
-  // Toolbar functionality
+  // Helper function to wrap text with markdown syntax
+  function wrapText(before, after) {
+    const doc = editor.getDoc();
+    const selection = doc.getSelection();
+
+    if (selection) {
+      doc.replaceSelection(before + selection + after);
+    } else {
+      const cursor = doc.getCursor();
+      doc.replaceRange(before + after, cursor);
+      doc.setCursor({
+        line: cursor.line,
+        ch: cursor.ch + before.length,
+      });
+    }
+    editor.focus();
+  }
+
+  // Helper function to insert text at cursor
+  function insertText(text) {
+    const doc = editor.getDoc();
+    const cursor = doc.getCursor();
+    doc.replaceRange(text, cursor);
+    editor.focus();
+  }
+
+  // Add click handlers for toolbar buttons
   document.querySelectorAll(".toolbar button").forEach((button) => {
-    button.addEventListener("click", function () {
-      const action = this.dataset.action;
-      let selection = editor.getSelection();
-
-      switch (action) {
-        case "bold":
-          editor.replaceSelection(`**${selection}**`);
-          break;
-        case "italic":
-          editor.replaceSelection(`*${selection}*`);
-          break;
-        case "link":
-          if (selection) {
-            editor.replaceSelection(`[${selection}](url)`);
-          } else {
-            editor.replaceSelection("[Link text](url)");
-          }
-          break;
-        case "image":
-          editor.replaceSelection(`![alt text](image-url)`);
-          break;
-        case "code":
-          if (selection.indexOf("\n") !== -1) {
-            editor.replaceSelection("```\n" + selection + "\n```");
-          } else {
-            editor.replaceSelection("`" + selection + "`");
-          }
-          break;
+    button.addEventListener("click", () => {
+      const action = button.getAttribute("data-action");
+      if (actions[action]) {
+        actions[action]();
       }
-      editor.focus();
     });
+  });
+
+  // Copy button functionality
+  document.getElementById("copy-btn").addEventListener("click", () => {
+    const markdown = editor.getValue();
+    navigator.clipboard.writeText(markdown).then(() => {
+      alert("Content copied to clipboard!");
+    });
+  });
+
+  // Theme switch functionality
+  let isDark = true;
+  document.getElementById("theme-switch").addEventListener("click", () => {
+    isDark = !isDark;
+    editor.setOption("theme", isDark ? "monokai" : "default");
   });
 
   // Fullscreen functionality
-  document
-    .getElementById("fullscreen-btn")
-    .addEventListener("click", function () {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
-    });
-
-  // Theme switch functionality
-  let isDarkTheme = false;
-  document
-    .getElementById("theme-switch")
-    .addEventListener("click", function () {
-      isDarkTheme = !isDarkTheme;
-      if (isDarkTheme) {
-        document.body.classList.add("dark-theme");
-        editor.setOption("theme", "monokai");
-      } else {
-        document.body.classList.remove("dark-theme");
-        editor.setOption("theme", "default");
-      }
-    });
-
-  // Resize editor on window resize
-  function resizeEditor() {
-    const editorElement = editor.getWrapperElement();
-    const availableHeight = editorElement.parentElement.clientHeight;
-    const toolbarHeight = document.querySelector(".toolbar").offsetHeight;
-    const editorHeight = availableHeight - toolbarHeight - 20; // 20px for padding
-    editorElement.style.height = `${editorHeight}px`;
-    editor.refresh();
-  }
-
-  window.addEventListener("resize", resizeEditor);
-  resizeEditor(); // Initial resize
-
-  // Copy button functionality
-  document.getElementById("copy-btn").addEventListener("click", function () {
-    const previewText = preview.innerText;
-
-    const tempTextArea = document.createElement("textarea");
-    tempTextArea.value = previewText;
-    document.body.appendChild(tempTextArea);
-
-    tempTextArea.select();
-    document.execCommand("copy");
-
-    document.body.removeChild(tempTextArea);
-
-    this.textContent = "Copied!";
-    setTimeout(() => {
-      this.textContent = "Copy";
-    }, 2000);
+  document.getElementById("fullscreen-btn").addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
   });
 });
