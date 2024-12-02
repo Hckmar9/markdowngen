@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Initialize theme
+  let isDark = true;
+  document.body.classList.add("dark-theme");
+
   // Initialize CodeMirror
   const editor = CodeMirror.fromTextArea(
     document.getElementById("markdown-input"),
@@ -91,9 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Theme switch functionality
-  let isDark = true;
   document.getElementById("theme-switch").addEventListener("click", () => {
     isDark = !isDark;
+    document.body.classList.toggle("dark-theme");
     editor.setOption("theme", isDark ? "monokai" : "default");
   });
 
